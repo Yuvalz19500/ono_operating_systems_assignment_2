@@ -37,6 +37,7 @@ namespace Scheduling
             m_spPolicy.AddProcess(m_cProcesses);
             m_cProcesses++;
         }
+
         public void CreateProcess(string sCodeFileName, int iPriority)
         {
             Code code = new Code(sCodeFileName);
@@ -91,7 +92,7 @@ namespace Scheduling
                 ActivateScheduler();
         }
 
-        private ProcessTableEntry ContextSwitch(int iEnteringProcessId)
+        private ProcessTableEntry? ContextSwitch(int iEnteringProcessId)
         {
             //your code here
             //implement a context switch, switching between the currently active process on the CPU to the process with pid iEnteringProcessId
@@ -100,7 +101,22 @@ namespace Scheduling
             //Our CPU does not have registers, so we do not store or switch register values.
             //returns the process table information of the outgoing process
             //After this method terminates, the execution continues with the new process
-            throw new NotImplementedException();
+
+            ProcessTableEntry? outgoingProcess = null;
+
+            if (CPU.ActiveProcess != -1) 
+            {
+                outgoingProcess = m_dProcessTable[CPU.ActiveProcess];
+                m_dProcessTable[CPU.ActiveProcess].ProgramCounter = CPU.ProgramCounter;
+            }
+
+            ProcessTableEntry enteringProcess = m_dProcessTable[iEnteringProcessId];
+            CPU.ActiveProcess = iEnteringProcessId;
+            CPU.ActiveAddressSpace = enteringProcess.AddressSpace;
+            CPU.ActiveConsole = enteringProcess.Console;
+            CPU.ProgramCounter = enteringProcess.ProgramCounter;
+
+            return outgoingProcess;
         }
 
         public void ActivateScheduler()
