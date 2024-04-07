@@ -1,0 +1,11 @@
+variable i
+variable j
+i = 0
+j = 0
+write i + "," + j + "\n"
+j = j + 1
+if j < 3
+	goto 4
+i = i + 1
+if i < 3 
+	goto 3

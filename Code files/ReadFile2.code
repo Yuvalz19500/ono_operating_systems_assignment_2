@@ -1,0 +1,14 @@
+variable i
+variable data
+i = 0
+L1:
+read data.txt i data
+i = i + 1
+if data != EOF
+	goto L1
+L2:
+i = i - 1
+read data.txt i data
+write data + " "
+if i > 0 
+	goto L2

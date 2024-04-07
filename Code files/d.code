@@ -1,0 +1,16 @@
+variable i
+variable j
+i = 0
+L1:
+j = i + 1
+L2:
+write i + "," + j + "\n"
+j = j + 1
+if j < 5
+	goto L2
+i = i + 1
+if i < 5 
+	goto L1
+L:
+yield
+goto L

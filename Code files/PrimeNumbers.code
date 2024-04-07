@@ -1,0 +1,20 @@
+variable i
+variable j
+variable k
+variable l
+i = 3
+L1:
+k = 0
+j = 2
+L2:
+l = i % j
+if l = 0
+	k = k + 1
+j = j + 1
+if j < i / 2
+	goto L2
+if k = 0
+	write i + " "
+i = i + 1
+if i < 1000 
+	goto L1
