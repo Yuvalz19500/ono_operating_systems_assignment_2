@@ -47,7 +47,7 @@ namespace Scheduling
         }
         public void Close()
         {
-            m_tConsole.Abort();
+            m_tConsole.Interrupt();
             m_tConsole = null;
             m_swLog.Close();
         }

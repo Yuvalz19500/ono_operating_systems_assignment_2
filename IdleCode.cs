@@ -9,7 +9,8 @@ namespace Scheduling
     {
         public IdleCode() : base()
         {
-            //your code here
+            m_lLines.Add("yield");
+            m_lLines.Add("goto 0");
         }
     }
 }

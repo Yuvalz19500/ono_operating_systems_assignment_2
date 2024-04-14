@@ -17,6 +17,7 @@ namespace Scheduling
                 os.CreateProcess("b.code");
             }
         }
+
         static void Example2(OperatingSystem os)
         {
             for (int i = 0; i < 3; i++)
@@ -25,6 +26,7 @@ namespace Scheduling
                 os.CreateProcess("ReadFile2.code");
             }
         }
+
         static void Example3(OperatingSystem os)
         {
             for (int i = 0; i < 3; i++)
@@ -33,6 +35,7 @@ namespace Scheduling
                 os.CreateProcess("d.code");
             }
         }
+
         static void Example4(OperatingSystem os)
         {
             for (int i = 0; i < 3; i++)
@@ -41,6 +44,7 @@ namespace Scheduling
                 os.CreateProcess("d.code", i + 1);
             }
         }
+
         static void Main(string[] args)
         {
             //set the working directory to the "Code files" dir
@@ -50,15 +54,15 @@ namespace Scheduling
             CPU cpu = new CPU(disk);
             cpu.Debug = true;
             OperatingSystem os = new OperatingSystem(cpu, disk, new  HighestIndexPolicy());
-            Example1(os);
-            //Example2(os);
+            //Example1(os);
+            Example2(os);
             //Example3(os);
             //Example4(os);
             os.ActivateScheduler();
             cpu.Execute();
             Thread.Sleep(1000);
-            Console.WriteLine("Average turnaround " + os.AverageTurnaround());
-            Console.WriteLine("Maximal starvation " + os.MaximalStarvation());
+/*          Console.WriteLine("Average turnaround " + os.AverageTurnaround());
+            Console.WriteLine("Maximal starvation " + os.MaximalStarvation());*/
         }
     }
 }

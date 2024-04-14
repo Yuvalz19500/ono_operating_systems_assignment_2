@@ -105,8 +105,8 @@ namespace Scheduling
                 AssignValue(asLine);
             else if (asLine[0] == "yield")
             {
-                //your code here
-                //yield releases the CPU and activates the scheduler
+                OperatingSystem.ActivateScheduler();
+                return ProgramCounter + 1;
             }
             else
                 throw new NotImplementedException("Unsupported command " + sLine);

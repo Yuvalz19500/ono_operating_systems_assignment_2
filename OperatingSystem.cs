@@ -25,7 +25,11 @@ namespace Scheduling
             disk.OperatingSystem = this;
             m_spPolicy = sp;
 
-            //create an "idle" process here
+            Code idleCode = new IdleCode();
+            m_dProcessTable[IDLE_PROCESS_ID] = new ProcessTableEntry(IDLE_PROCESS_ID, "IdleProcess", idleCode);
+            m_dProcessTable[IDLE_PROCESS_ID].StartTime = CPU.TickCount;
+            m_spPolicy.AddProcess(IDLE_PROCESS_ID);
+            m_cProcesses++;
         }
 
 
@@ -82,32 +86,52 @@ namespace Scheduling
 
         public void Interrupt(ReadTokenRequest rFinishedRequest)
         {
-            //implement an "end read request" interrupt handler.
-            //translate the returned token into a value (double). 
-            //when the token is null, EOF has been reached.
-            //write the value to the appropriate address space of the calling process.
-            //activate the next request in queue on the disk.
-            throw new NotImplementedException();
-            if(m_spPolicy.RescheduleAfterInterrupt())
+            // a. Translate the token to double
+            double tokenParsedValue = Double.NaN;
+
+            if (rFinishedRequest.Token != null) 
+            {
+                if (!Double.TryParse(rFinishedRequest.Token, out tokenParsedValue))
+                {
+                    Console.WriteLine("Warning: Read token '" + rFinishedRequest.Token + "' could not be parsed as a double.");
+                    return;
+                }
+            }
+
+            // b. Save the value in the appropriate variable
+            if (m_dProcessTable.TryGetValue(rFinishedRequest.ProcessId, out var entry))
+            {
+                entry.AddressSpace[rFinishedRequest.TargetVariable] = tokenParsedValue;
+                m_dProcessTable[rFinishedRequest.ProcessId] = entry;
+            }
+            else
+            {
+                Console.WriteLine("Error: Process ID " + rFinishedRequest.ProcessId + " not found in process table.");
+                return;
+            }
+
+            // c. Activate the next read request if any
+            if (m_lReadRequests.Count > 0)
+            {
+                ReadTokenRequest nextRequest = m_lReadRequests[0];
+                m_lReadRequests.RemoveAt(0);
+                Disk.ActiveRequest = nextRequest;
+            }
+
+            // d. Call the scheduler if required
+            if (m_spPolicy.RescheduleAfterInterrupt())
                 ActivateScheduler();
         }
 
         private ProcessTableEntry? ContextSwitch(int iEnteringProcessId)
         {
-            //your code here
-            //implement a context switch, switching between the currently active process on the CPU to the process with pid iEnteringProcessId
-            //You need to switch the following: ActiveProcess, ActiveAddressSpace, ActiveConsole, ProgramCounter.
-            //All values are stored in the process table (m_dProcessTable)
-            //Our CPU does not have registers, so we do not store or switch register values.
-            //returns the process table information of the outgoing process
-            //After this method terminates, the execution continues with the new process
-
             ProcessTableEntry? outgoingProcess = null;
 
-            if (CPU.ActiveProcess != -1) 
-            {
-                outgoingProcess = m_dProcessTable[CPU.ActiveProcess];
+            if (CPU.ActiveProcess != -1) {
                 m_dProcessTable[CPU.ActiveProcess].ProgramCounter = CPU.ProgramCounter;
+                m_dProcessTable[CPU.ActiveProcess].AddressSpace = CPU.ActiveAddressSpace;
+                m_dProcessTable[CPU.ActiveProcess].Console = CPU.ActiveConsole;
+                outgoingProcess = m_dProcessTable[CPU.ActiveProcess];
             }
 
             ProcessTableEntry enteringProcess = m_dProcessTable[iEnteringProcessId];
@@ -129,8 +153,8 @@ namespace Scheduling
             }
             else
             {
-                bool bOnlyIdleRemains = false;
-                //add code here to check if only the Idle process remains
+                bool bOnlyIdleRemains = iNextProcessId == IDLE_PROCESS_ID;
+
                 if(bOnlyIdleRemains)
                 {
                     Console.WriteLine("Only idle remains.");
