@@ -10,7 +10,8 @@ namespace Scheduling
         private int m_iActiveProcess;
 
         //The active process is the currently running process
-        public int ActiveProcess {
+        public int ActiveProcess
+        {
             get
             {
                 return m_iActiveProcess;
@@ -38,7 +39,7 @@ namespace Scheduling
         public Disk Disk { get; private set; }
         public bool Done { get; set; }
         public int TickCount { get; private set; }
-        public bool Debug{ get; set; }
+        public bool Debug { get; set; }
 
         public CPU(Disk disk)
         {
@@ -72,7 +73,7 @@ namespace Scheduling
                 else
                 {
                     string sLine = ActiveAddressSpace.Code[ProgramCounter];
-                    if(Debug)
+                    if (Debug)
                         Console.WriteLine("pid " + ActiveProcess + "," + ProgramCounter + ": " + sLine);
                     ProgramCounter = ExecuteLine(sLine);
                 }
@@ -105,12 +106,13 @@ namespace Scheduling
                 AssignValue(asLine);
             else if (asLine[0] == "yield")
             {
+                ProgramCounter++;
                 OperatingSystem.ActivateScheduler();
-                return ProgramCounter + 1;
+                return ProgramCounter;
             }
             else
                 throw new NotImplementedException("Unsupported command " + sLine);
-                
+
             return ProgramCounter + 1;
         }
 
@@ -134,7 +136,7 @@ namespace Scheduling
         private double EvaluateNumeric(string[] asLine, int iCurrent)
         {
             double dCurrent = 0.0;
-            if(!double.TryParse(asLine[iCurrent], out dCurrent))
+            if (!double.TryParse(asLine[iCurrent], out dCurrent))
                 dCurrent = ActiveAddressSpace[asLine[iCurrent]];
             if (iCurrent == asLine.Length - 1)
                 return dCurrent;

@@ -55,8 +55,8 @@ namespace Scheduling
             cpu.Debug = true;
             OperatingSystem os = new OperatingSystem(cpu, disk, new  HighestIndexPolicy());
             //Example1(os);
-            Example2(os);
-            //Example3(os);
+            //Example2(os);
+            Example3(os);
             //Example4(os);
             os.ActivateScheduler();
             cpu.Execute();

@@ -102,6 +102,7 @@ namespace Scheduling
             if (m_dProcessTable.TryGetValue(rFinishedRequest.ProcessId, out var entry))
             {
                 entry.AddressSpace[rFinishedRequest.TargetVariable] = tokenParsedValue;
+                entry.Blocked = false;
                 m_dProcessTable[rFinishedRequest.ProcessId] = entry;
             }
             else
@@ -153,7 +154,7 @@ namespace Scheduling
             }
             else
             {
-                bool bOnlyIdleRemains = iNextProcessId == IDLE_PROCESS_ID;
+                bool bOnlyIdleRemains = iNextProcessId == IDLE_PROCESS_ID && m_dProcessTable.Values.All(entry => entry.Done || entry.ProcessId == IDLE_PROCESS_ID);
 
                 if(bOnlyIdleRemains)
                 {
