@@ -7,20 +7,24 @@ namespace Scheduling
 {
     class FirstComeFirstServedPolicy : SchedulingPolicy
     {
+        private readonly Queue<int> _proccessQueue = new();
 
         public override int NextProcess(Dictionary<int, ProcessTableEntry> dProcessTable)
         {
-            throw new NotImplementedException();
+            if (_proccessQueue.Count == 0)
+                return -1;
+
+            return _proccessQueue.Dequeue();
         }
 
         public override void AddProcess(int iProcessId)
         {
-            throw new NotImplementedException();
+            _proccessQueue.Enqueue(iProcessId);
         }
 
         public override bool RescheduleAfterInterrupt()
         {
-            throw new NotImplementedException();
+            return false;
         }
     }
 }
