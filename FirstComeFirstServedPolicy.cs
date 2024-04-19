@@ -7,14 +7,23 @@ namespace Scheduling
 {
     class FirstComeFirstServedPolicy : SchedulingPolicy
     {
-        private readonly Queue<int> _proccessQueue = new();
+        protected readonly Queue<int> _proccessQueue = new();
 
         public override int NextProcess(Dictionary<int, ProcessTableEntry> dProcessTable)
         {
-            if (_proccessQueue.Count == 0)
-                return -1;
+            for (int i = 0; i < _proccessQueue.Count; i++)
+            {
+                int processId = _proccessQueue.Dequeue();
+                _proccessQueue.Enqueue(processId);
+                ProcessTableEntry e = dProcessTable[processId];
+                if (!e.Done && !e.Blocked)
+                {
+                    _proccessQueue.Enqueue(processId);
+                    return processId;
+                }
+            }
 
-            return _proccessQueue.Dequeue();
+            return -1;
         }
 
         public override void AddProcess(int iProcessId)

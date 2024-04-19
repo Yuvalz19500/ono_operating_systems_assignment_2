@@ -5,10 +5,13 @@ using System.Text;
 
 namespace Scheduling
 {
-    class RoundRobin : SchedulingPolicy
+    class RoundRobin : FirstComeFirstServedPolicy
     {
-        public RoundRobin(int iQuantum)
+        protected int m_iQuantum;
+
+        public RoundRobin(int iQuantum) : base()
         {
+            m_iQuantum = iQuantum;
         }
 
         public override int NextProcess(Dictionary<int, ProcessTableEntry> dProcessTable)
@@ -18,12 +21,12 @@ namespace Scheduling
 
         public override void AddProcess(int iProcessId)
         {
-            throw new NotImplementedException();
+            base.AddProcess(iProcessId);
         }
 
         public override bool RescheduleAfterInterrupt()
         {
-            throw new NotImplementedException();
+            return true;
         }
     }
 }
