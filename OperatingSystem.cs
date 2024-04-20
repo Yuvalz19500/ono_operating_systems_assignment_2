@@ -141,6 +141,11 @@ namespace Scheduling
             CPU.ActiveConsole = enteringProcess.Console;
             CPU.ProgramCounter = enteringProcess.ProgramCounter;
 
+            if (m_spPolicy is RoundRobin roundRobinPolicy) 
+            {
+                CPU.RemainingTime = roundRobinPolicy.m_iQuantum;
+            }
+
             return outgoingProcess;
         }
 

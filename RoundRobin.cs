@@ -7,7 +7,7 @@ namespace Scheduling
 {
     class RoundRobin : FirstComeFirstServedPolicy
     {
-        protected int m_iQuantum;
+        public int m_iQuantum { get; }
 
         public RoundRobin(int iQuantum) : base()
         {
@@ -16,7 +16,7 @@ namespace Scheduling
 
         public override int NextProcess(Dictionary<int, ProcessTableEntry> dProcessTable)
         {
-            throw new NotImplementedException();
+            return base.NextProcess(dProcessTable);
         }
 
         public override void AddProcess(int iProcessId)
