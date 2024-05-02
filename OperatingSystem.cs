@@ -28,6 +28,7 @@ namespace Scheduling
             Code idleCode = new IdleCode();
             m_dProcessTable[IDLE_PROCESS_ID] = new ProcessTableEntry(IDLE_PROCESS_ID, "IdleProcess", idleCode);
             m_dProcessTable[IDLE_PROCESS_ID].StartTime = CPU.TickCount;
+            m_dProcessTable[IDLE_PROCESS_ID].Priority = int.MinValue;
             m_spPolicy.AddProcess(IDLE_PROCESS_ID);
             m_cProcesses++;
         }
@@ -103,6 +104,7 @@ namespace Scheduling
             {
                 entry.AddressSpace[rFinishedRequest.TargetVariable] = tokenParsedValue;
                 entry.Blocked = false;
+                entry.LastCPUTime = CPU.TickCount;
                 m_dProcessTable[rFinishedRequest.ProcessId] = entry;
             }
             else
@@ -132,10 +134,17 @@ namespace Scheduling
                 m_dProcessTable[CPU.ActiveProcess].ProgramCounter = CPU.ProgramCounter;
                 m_dProcessTable[CPU.ActiveProcess].AddressSpace = CPU.ActiveAddressSpace;
                 m_dProcessTable[CPU.ActiveProcess].Console = CPU.ActiveConsole;
+                m_dProcessTable[CPU.ActiveProcess].LastCPUTime = CPU.TickCount;
                 outgoingProcess = m_dProcessTable[CPU.ActiveProcess];
             }
 
             ProcessTableEntry enteringProcess = m_dProcessTable[iEnteringProcessId];
+            int maxTime = enteringProcess.MaxStarvation;
+            if (maxTime < CPU.TickCount - enteringProcess.LastCPUTime) 
+            {
+                m_dProcessTable[iEnteringProcessId].MaxStarvation = CPU.TickCount - enteringProcess.LastCPUTime;
+            }
+
             CPU.ActiveProcess = iEnteringProcessId;
             CPU.ActiveAddressSpace = enteringProcess.AddressSpace;
             CPU.ActiveConsole = enteringProcess.Console;
@@ -173,13 +182,27 @@ namespace Scheduling
 
         public double AverageTurnaround()
         {
-            //Compute the average time from the moment that a process enters the system until it terminates.
-            throw new NotImplementedException();
+            int sum = 0;
+            foreach (ProcessTableEntry e in m_dProcessTable.Values) 
+            {
+                sum += e.EndTime - e.StartTime;
+            }
+
+            return sum / m_dProcessTable.Count;
         }
         public int MaximalStarvation()
         {
-            //Compute the maximal time that some project has waited in a ready stage without receiving CPU time.
-            throw new NotImplementedException();
+            int max = int.MinValue;
+
+            foreach (ProcessTableEntry e in m_dProcessTable.Values) 
+            {
+                if (e.MaxStarvation > max) 
+                {
+                    max = e.MaxStarvation;
+                }
+            }
+
+            return max;
         }
     }
 }

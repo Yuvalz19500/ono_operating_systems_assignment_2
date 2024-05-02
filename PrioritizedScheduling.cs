@@ -5,25 +5,41 @@ using System.Text;
 
 namespace Scheduling
 {
-    class PrioritizedScheduling : SchedulingPolicy
+    class PrioritizedScheduling : RoundRobin
     {
-        public PrioritizedScheduling(int iQuantum)
+        public PrioritizedScheduling(int iQuantum) : base(iQuantum)
         {
         }
 
         public override int NextProcess(Dictionary<int, ProcessTableEntry> dProcessTable)
         {
-            throw new NotImplementedException();
+            int selectedProcess = -1;
+
+            Queue<int> orderedQueue = new(_proccessQueue.OrderByDescending((procId) => dProcessTable[procId].Priority));
+
+            for (int i = 0; i < orderedQueue.Count; i++)
+            {
+                int processId = orderedQueue.Dequeue();
+                orderedQueue.Enqueue(processId);
+                ProcessTableEntry e = dProcessTable[processId];
+                if (!e.Done && !e.Blocked)
+                {
+                    selectedProcess = processId;
+                    break;
+                }
+            }
+
+            return selectedProcess;
         }
 
         public override void AddProcess(int iProcessId)
         {
-            throw new NotImplementedException();
+            base.AddProcess(iProcessId);
         }
 
         public override bool RescheduleAfterInterrupt()
         {
-            throw new NotImplementedException();
+            return true;
         }
     }
 }

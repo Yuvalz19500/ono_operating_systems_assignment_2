@@ -22,8 +22,8 @@ namespace Scheduling
         {
             for (int i = 0; i < 3; i++)
             {
-                os.CreateProcess("ReadFile1.code");
-                os.CreateProcess("ReadFile2.code");
+                os.CreateProcess("ReadFile1.code", i);
+                os.CreateProcess("ReadFile2.code", i + 1);
             }
         }
 
@@ -53,16 +53,16 @@ namespace Scheduling
             Disk disk = new Disk();
             CPU cpu = new CPU(disk);
             cpu.Debug = true;
-            OperatingSystem os = new OperatingSystem(cpu, disk, new RoundRobin(4));
+            OperatingSystem os = new OperatingSystem(cpu, disk, new FirstComeFirstServedPolicy());
             //Example1(os);
-            //Example2(os);
-            Example3(os);
+            Example2(os);
+            //Example3(os);
             //Example4(os);
             os.ActivateScheduler();
             cpu.Execute();
             Thread.Sleep(1000);
-/*          Console.WriteLine("Average turnaround " + os.AverageTurnaround());
-            Console.WriteLine("Maximal starvation " + os.MaximalStarvation());*/
+            Console.WriteLine("Average turnaround " + os.AverageTurnaround());
+            Console.WriteLine("Maximal starvation " + os.MaximalStarvation());
         }
     }
 }

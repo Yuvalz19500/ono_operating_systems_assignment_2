@@ -18,7 +18,6 @@ namespace Scheduling
                 ProcessTableEntry e = dProcessTable[processId];
                 if (!e.Done && !e.Blocked)
                 {
-                    _proccessQueue.Enqueue(processId);
                     return processId;
                 }
             }

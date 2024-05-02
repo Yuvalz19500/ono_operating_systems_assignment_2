@@ -30,6 +30,7 @@ namespace Scheduling
             Thread.Sleep(100);
             m_swLog = new StreamWriter("ProcessLog." + m_iProcessId + ".txt");
         }
+
         public void OpenConsole()
         {
             try
@@ -45,12 +46,14 @@ namespace Scheduling
                 m_ocOutput = null;
             }
         }
+
         public void Close()
         {
             m_tConsole.Interrupt();
             m_tConsole = null;
             m_swLog.Close();
         }
+
         public void Write(string s)
         {
             m_ocOutput.Invoke(new MethodInvoker(m_ocOutput.BringToFront));
