@@ -53,7 +53,7 @@ namespace Scheduling
             Disk disk = new Disk();
             CPU cpu = new CPU(disk);
             cpu.Debug = true;
-            OperatingSystem os = new OperatingSystem(cpu, disk, new FirstComeFirstServedPolicy());
+            OperatingSystem os = new OperatingSystem(cpu, disk, new RoundRobin(5));
             //Example1(os);
             Example2(os);
             //Example3(os);

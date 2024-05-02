@@ -182,7 +182,7 @@ namespace Scheduling
 
         public double AverageTurnaround()
         {
-            int sum = 0;
+            double sum = 0;
             foreach (ProcessTableEntry e in m_dProcessTable.Values) 
             {
                 sum += e.EndTime - e.StartTime;
