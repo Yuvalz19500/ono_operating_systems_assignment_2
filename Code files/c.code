@@ -9,6 +9,9 @@ if j < 3
 i = i + 1
 if i < 3 
 	goto 3
+z = 0
 L:
+z = z + 1
 yield
-goto L
+if z < 10000
+	goto L

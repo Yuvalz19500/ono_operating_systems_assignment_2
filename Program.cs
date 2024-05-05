@@ -53,11 +53,11 @@ namespace Scheduling
             Disk disk = new Disk();
             CPU cpu = new CPU(disk);
             cpu.Debug = true;
-            OperatingSystem os = new OperatingSystem(cpu, disk, new RoundRobin(5));
+            OperatingSystem os = new OperatingSystem(cpu, disk, new PrioritizedScheduling(5));
             //Example1(os);
-            Example2(os);
+            //Example2(os);
             //Example3(os);
-            //Example4(os);
+            Example4(os);
             os.ActivateScheduler();
             cpu.Execute();
             Thread.Sleep(1000);

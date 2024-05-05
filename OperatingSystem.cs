@@ -65,6 +65,7 @@ namespace Scheduling
 
         public void TimeoutReached()
         {
+            Console.WriteLine("--------- Changing process due to quantom ---------");
             ActivateScheduler();
         }
 
@@ -168,7 +169,7 @@ namespace Scheduling
             }
             else
             {
-                bool bOnlyIdleRemains = iNextProcessId == IDLE_PROCESS_ID && m_dProcessTable.Values.All(entry => entry.Done || entry.ProcessId == IDLE_PROCESS_ID);
+                bool bOnlyIdleRemains = m_dProcessTable.Values.All(entry => entry.Done || entry.ProcessId == IDLE_PROCESS_ID);
 
                 if(bOnlyIdleRemains)
                 {
